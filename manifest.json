@@ -1,0 +1,20 @@
+{
+  "name": "Envify chrome",
+  "version": "1.0",
+  "description": "The same as envify firefox but for chrome",
+  "manifest_version": 2,
+  "permissions": [
+    "storage"
+  ],
+  "options_ui": {
+    "page": "popup/manage_env.html",
+    "open_in_tab": true
+  },
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "css": ["style.css"],
+      "js": ["popup/browser-polyfill.min.js", "content_script.js"]
+    }
+  ]
+}

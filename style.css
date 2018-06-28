@@ -1,0 +1,20 @@
+body.envify {
+  padding-left: 35px !important;
+  padding-right: 35px !important;
+}
+
+body div.envify.left {
+  position: fixed;
+  top: 0px;
+  left: 0px;
+  height: 100%;
+  width: 35px;
+}
+
+body div.envify.right {
+  position: fixed;
+  top: 0px;
+  right: 0px;
+  height: 100%;
+  width: 35px;
+}
