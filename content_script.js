@@ -5,8 +5,6 @@ function matchRule(str, rule) {
 function getColorFromUrl(url) {
 	var color = null
 
-  console.log(url)
-  console.log(env)
 	env.forEach(function(env) {
 		if (matchRule(url, env.match)) {
 			color = env.color
@@ -16,18 +14,27 @@ function getColorFromUrl(url) {
 	return color
 }
 
-function setColorInsideTab(color) {
-
+function setColorInsideTab(color, visualStyle) {
   if (color == null)
     return
 
   envify_left_div = document.createElement('div')
   envify_left_div.classList.add('envify')
-  envify_left_div.classList.add('left')
+
+  if (visualStyle === "left" || visualStyle === "leftright")
+    envify_left_div.classList.add('left')
+
+  if (visualStyle === "top" || visualStyle === "topbottom")
+    envify_left_div.classList.add('top')
 
   envify_right_div = document.createElement('div')
   envify_right_div.classList.add('envify')
-  envify_right_div.classList.add('right')
+
+  if (visualStyle === "right" || visualStyle === "leftright")
+    envify_right_div.classList.add('right')
+
+  if (visualStyle === "bottom" || visualStyle === "topbottom")
+    envify_right_div.classList.add('bottom')
 
   envify_right_div.style.backgroundColor = color
   envify_left_div.style.backgroundColor = color
@@ -36,15 +43,17 @@ function setColorInsideTab(color) {
   document.body.appendChild(envify_right_div)
 }
 
-url = window.location.href
-
-chrome.storage.sync.get("environments", function(results){
-  console.log(results);
+browser.storage.sync.get(["environments", "visualStyle"]).then((results) => {
   env = []
-  let { environments } = results;
+  let environments = results.environments;
+  let visualStyle = results.visualStyle;
 
-  if (environments == undefined) {
+  if (environments === undefined) {
     return
+  }
+
+  if (visualStyle === undefined) {
+	visualStyle = "leftright"
   }
 
   Object.keys(environments).map(function(value){
@@ -55,6 +64,7 @@ chrome.storage.sync.get("environments", function(results){
     return a.match.length - b.match.length
   })
 
-  setColorInsideTab(getColorFromUrl(url))
-})
-
+  setColorInsideTab(getColorFromUrl(window.location.href), visualStyle)
+}, function(error){
+  console.error("Could not retrieve settings from browser.storage.sync, error was " + error)
+});
