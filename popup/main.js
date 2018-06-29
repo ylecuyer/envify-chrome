@@ -1,6 +1,7 @@
 let listEnvironments = document.querySelector(".list-environments")
 let btnAddEnv = document.getElementById("btn-add-env");
 let btnSaveEnv = document.getElementById("btn-save-env");
+let selectVisualStyle = document.getElementById("select-visual-style");
 
 let addEnvironment = function(url, color){
 	let environmentNode =  document.createElement("section");
@@ -50,19 +51,39 @@ let updateEnvironments = function(){
 	});
 }
 
-btnAddEnv.addEventListener("click", function() { addEnvironment() }, false)
+let updateVisualStyle = function(){
+	let visualStyle = selectVisualStyle.value;
+	browser.storage.sync.set({"visualStyle": visualStyle}).catch(function(err){
+		selectVisualStyle.setCustomValidity("Could not save the selected visual style");
+		selectVisualStyle.reportValidity();
+	});
+}
+
+btnAddEnv.addEventListener("click", addEnvironment, false)
 btnSaveEnv.addEventListener("click", updateEnvironments, false)
+selectVisualStyle.addEventListener("change", updateVisualStyle, false)
 
 document.addEventListener("DOMContentLoaded", function(){
-	browser.storage.sync.get("environments")
-	.then(function(results){
-		let { environments } = results;
-		Object.keys(environments).map(function(value){
-			addEnvironment(value, environments[value]);
-		});
+	browser.storage.sync.get(["environments", "visualStyle"]).then((results) => {
+		let environments = results.environments;
+		let visualStyle = results.visualStyle;
+
+		if(environments != undefined){
+			Object.keys(environments).map(function(value){
+				addEnvironment(value, environments[value]);
+			});
+		}
+
+		if(visualStyle === undefined){
+			selectVisualStyle.value = "leftright";
+		}else{
+			selectVisualStyle.value = visualStyle;
+		}
 	})
 	.catch(function(err){
 		btnAddEnv.setCustomValidity("Could not load your environments");
 		btnAddEnv.reportValidity();
+		selectVisualStyle.setCustomValidity("Could not load your selected visual style");
+		selectVisualStyle.reportValidity();
 	})
 }, false)

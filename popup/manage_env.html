@@ -1,4 +1,4 @@
-<!doctype html>
+<!DOCTYPE html>
 <html>
 <head>
 	<meta charset="utf-8">
@@ -17,7 +17,17 @@
 
 	<button id="btn-save-env">Save</button>
 
-  <script src="browser-polyfill.min.js"></script>
+	<p>Select visual style</p>
+	<select id="select-visual-style">
+		<option value="left">Left bar</option>
+		<option value="right">Right bar</option>
+		<option value="leftright">Left and right bar</option>
+		<option value="top">Top bar</option>
+		<option value="bottom">Bottom bar</option>
+		<option value="topbottom">Top and bottom bar</option>
+	</select>
+
+	<script src="browser-polyfill.min.js"></script>
 	<script src="main.js"></script>
 </body>
 </html>
